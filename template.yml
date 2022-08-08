@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Resources:
+  CreateOrdersFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: handler.createOrdersFunction
+      Runtime: nodejs14.x
+      CodeUri: ./src/CreateOrdersFunction
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref OrdersTable
+      Environment:
+        Variables:
+          ORDERS_TABLE: !Ref OrdersTable
+      Events:
+        OrdersApi:
+          Type: Api
+          Properties:
+            Path: /orders
+            Method: POST
+  OrdersTable:
+    Type: 'AWS::Serverless::SimpleTable'
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: String
+
+Outputs:
+  MyApi:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/orders/"

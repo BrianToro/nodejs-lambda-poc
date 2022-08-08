@@ -1,0 +1,5 @@
+.idea
+.aws-sam
+node_modules
+package-lock.json
+samconfig.toml
